@@ -14,3 +14,5 @@ DB생성
 - (models.py 에서) 모델을 변경합니다.
 - python manage.py makemigrations을 통해 이 변경사항에 대한 마이그레이션을 만드세요.
 - python manage.py migrate 명령을 통해 변경사항을 데이터베이스에 적용하세요.
+
+commit test

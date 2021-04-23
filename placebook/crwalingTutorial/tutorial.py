@@ -2,7 +2,13 @@
 # Anchor extraction from HTML document
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-with urlopen('https://en.wikipedia.org/wiki/Main_Page') as response:
+n = 0
+f = open("/Users/daraelee/placebook-server/naver.txt", 'w')
+with urlopen('https://www.naver.com') as response:
     soup = BeautifulSoup(response, 'html.parser')
-    for anchor in soup.find_all('a'):
-        print(anchor.get('href', '/'))
+    for anchor in soup.select("a.thumb"):
+        n += 1
+        data = anchor.img['alt'] + ': '+ anchor.img['src'] + "\n"
+        print(anchor)
+        f.write(data)
+        f.close

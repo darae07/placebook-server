@@ -15,10 +15,14 @@ def data_converter():
     df.rename(columns = {'상호명': 'name', '상권업종중분류명': 'cate_1', '상권업종소분류명': 'cate_2', '표준산업분류명': 'cate_3', '행정동명': 'dong', '위도': 'lon', '경도': 'lan'}, inplace = True)
     df.to_csv('sample.csv')
 
-def data_calculer():
+def data_calculer(name):
     # null 처리
     df = pandas.read_csv('sample.csv')
     df = df.head(20000)
+    
+    dong = df.loc[df['name'] == name].values[0][5]
+    print(dong, type(dong))
+    # df = df.loc[df['dong'] == dong]
     df['category'] = df['category'].fillna('')
     print(df['category'].isnull().sum())
     tfidf = TfidfVectorizer(stop_words='english')
@@ -26,20 +30,21 @@ def data_calculer():
     print(tfidf_matrix.shape)
     cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
     indices = pandas.Series(df.index, index=df['name']).drop_duplicates()
-    print(indices.head())
 
-    def get_recommendations(name, cosine_sim=cosine_sim):
-        idx = indices[name]
-        sim_scores = list(enumerate(cosine_sim[idx]))
-        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:11]
-        store_indices = [i[0] for i in sim_scores]
-        return df['name'].iloc[store_indices]
+    cosine_sim=cosine_sim
+    idx = indices[name]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:11]
+    store_indices = [i[0] for i in sim_scores]
+    return df['name'].iloc[store_indices]
+    # def get_recommendations(name, cosine_sim=cosine_sim):
+        
 
-    print(get_recommendations('호랑이가만든족발'))
+    # print(get_recommendations('호랑이가만든족발'))
 
 
-data_calculer()
+print(data_calculer('든든한우家'))
 # count_vect_category = CountVectorizer(min_df=0, ngram_range=(1,2))
 # place_category = count_vect_category.fit_transform(df['category'])
 # place_simi_categ = cosine_similarity(place_category, place_category)
